@@ -1,0 +1,34 @@
+# Local development infrastructure for FridgeDB.
+# This file currently starts PostgreSQL only.
+services:
+  postgres:
+    # PostgreSQL database service used by the future backend API.
+    image: postgres:17
+    container_name: fridgedb-postgres
+    restart: unless-stopped
+
+    # Database credentials and initial database name for local development.
+    environment:
+      POSTGRES_DB: fridgedb
+      POSTGRES_USER: fridgedb
+      POSTGRES_PASSWORD: fridgedb_dev_password
+
+    # Expose PostgreSQL only on the local machine.
+    ports:
+      - "127.0.0.1:5432:5432"
+
+    # Persist PostgreSQL data across container restarts and recreations.
+    volumes:
+      - fridgedb_postgres_data:/var/lib/postgresql/data
+
+    # Verify PostgreSQL is accepting connections before dependent services are added later.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fridgedb -d fridgedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+# Named Docker volume for local PostgreSQL data persistence.
+volumes:
+  fridgedb_postgres_data:

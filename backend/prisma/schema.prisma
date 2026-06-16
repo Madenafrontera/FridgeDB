@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id             Int       @id @default(autoincrement())
+  userId         String    @map("user_id")
+  categoryId     String    @map("category_id")
+  iconId         String    @map("icon_id")
+  name           String
+  quantity       Int
+  expirationDate DateTime? @map("expiration_date") @db.Date
+  status         String    @default("active")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
+
+  @@map("fridge_items")
+}
